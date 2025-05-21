@@ -1,32 +1,19 @@
-from flask import Blueprint, jsonify, request
-from flask_jwt_extended import create_access_token
-from app.models.user import User
-from app import db, jwt
+from flask import Blueprint, request, jsonify
 
 auth_bp = Blueprint('auth', __name__)
 
-
-@auth_bp.route('/api/auth/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    if User.query.filter_by(username=data['username']).first():
-        return jsonify({'message': 'Username already exists'}), 400
-
-    user = User(username=data['username'])
-    user.set_password(data['password'])
-    db.session.add(user)
-    db.session.commit()
-
-    return jsonify({'message': 'User registered successfully'}), 201
-
-
-@auth_bp.route('/api/auth/login', methods=['POST'])
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    data = request.get_json()
-    user = User.query.filter_by(username=data['username']).first()
+    if request.method == 'POST':
+        # Handle login logic here
+        return jsonify({"message": "Login POST works"})
+    else:
+        return jsonify({"message": "Login GET works"})
 
-    if user and user.check_password(data['password']):
-        access_token = create_access_token(identity=user.username)
-        return jsonify(access_token=access_token), 200
-
-    return jsonify({'message': 'Invalid credentials'}), 401
+@auth_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        # Handle registration logic here
+        return jsonify({"message": "Register POST works"})
+    else:
+        return jsonify({"message": "Register GET works"})
